@@ -1,35 +1,22 @@
-import busio
-import time
-import board
-import adafruit_veml7700
+from smbus import SMBus
 
-# sudo pip3 install adafruit-circuitpython-veml7700
-# VEML7700:
-#       Pi 3V3(PIN-1) to sensor VIN
-#       Pi GND(PIN-6) to sensor GND
-#       Pi SCL(PIN-5) to sensor SCL
-#       Pi SDA(PIN-3) to sensor SDA
+addr = 0x8 # bus address
+bus = SMBus(1) # indicates /dev/ic2-1
 
-i2c = busio.I2C(board.SCL, board.SDA)
-veml7700 = adafruit_veml7700.VEML7700(i2c)
+numb = 1
 
+print ("Enter 1 for Blue or 2 for Green or 3 for Red or 0 for OFF")
+while numb == 1:
 
- 
-while True:
-    amb_light = veml7700.light
-    
-    print("Ambient light:", amb_light)
-    
-    # highlights the light mode
-    
-    if amb_light > 18000:
-        print ("blinding bright")
-    elif amb_light > 16000:
-        print ("bright")
-    elif amb_light > 10000:
-        print ("medium")
-    elif amb_light > 5000:
-        print ("dark")
-    else :
-        print ("glaring dark")
-    time.sleep(0.1)
+	ledstate = input(">>>>   ")
+
+	if ledstate == "1":
+		bus.write_byte(addr, 0x1) # switch it on
+	elif ledstate == "0":
+		bus.write_byte(addr, 0x0) # switch it on
+	elif ledstate == "2":
+		bus.write_byte(addr, 0x2) # switch it on
+	elif ledstate == "3":
+		bus.write_byte(addr, 0x3) # switch it on
+	else:
+		numb = 0
